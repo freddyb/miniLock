@@ -160,22 +160,40 @@ $('div.fileSelector').on('drop', function(e) {
 	// such to easily convert it to an DataTransferEntry
 	// using Webkit. This way we can take advantage of
 	// the attribute isDirectory
-	var items = e.originalEvent.dataTransfer.items
-	var item = null
-	for (var i = 0; i < items.length; i++) {
-		if (items[i].kind === 'file') {
-			item = items[i]
+	if ('items' in e.originalEvent.dataTransfer) { // blink/webkit
+		var items = e.originalEvent.dataTransfer.items
+		var item = null
+		for (var i = 0; i < items.length; i++) {
+			if (items[i].kind === 'file') {
+				item = items[i]
+				break
+			}
+		}
+		if (!item) {
+			throw new Error('miniLock: File handling failed - not valid file')
+		}
+		if (item.webkitGetAsEntry().isDirectory) {
+			// Sadly, works only using Webkit at the moment...
+			miniLock.UI.handleDirectorySelection(item.webkitGetAsEntry())
+		} else {
+			miniLock.UI.handleFileSelection(item.getAsFile())
+		}
+	} else if ('files' in e.originalEvent.dataTransfer) { // gecko
+		var files = e.originalEvent.dataTransfer.files
+		var file = null
+		for (var j = 0; j < files.length; j++) {
+			file= files[j]
 			break
 		}
-	}
-	if (!item) {
-		throw new Error('miniLock: File handling failed - not valid file')
-	}
-	if (item.webkitGetAsEntry().isDirectory) {
-		// Sadly, works only using Webkit at the moment...
-		miniLock.UI.handleDirectorySelection(item.webkitGetAsEntry())
-	} else {
-		miniLock.UI.handleFileSelection(item.getAsFile())
+		if (!file) {
+			throw new Error('miniLock: File handling failed - not valid file')
+		}
+		try {
+			miniLock.UI.handleFileSelection(file)
+		}
+		catch(e) {		// can't handle directories yet
+			throw new Error('miniLock: File handling failed - not valid file (and can\'t handle directories)')
+		}
 	}
 
 	return false
