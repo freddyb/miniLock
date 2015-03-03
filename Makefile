@@ -3,7 +3,8 @@ lint:
 	@node_modules/.bin/jshint --verbose --config .jshintrc \
 		src/js/*.js \
 		src/js/lib/phrase.js \
-		test/tests/*.js
+		test/tests/*.js \
+		lib/*.js
 	@/bin/echo ""
 
 chrome:
@@ -11,3 +12,7 @@ chrome:
 	@rm -f release/minilock.chrome.zip
 	@cd src/ && zip -q -r9 ../release/minilock.chrome.zip * -x "*/\.*" -x "\.*"
 	@/bin/echo "[miniLock] Chrome build available in release/"
+
+firefox:
+	#@source $(ADDON_SDK_PATH)/bin/activate
+	@cfx xpi

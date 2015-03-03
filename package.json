@@ -1,5 +1,5 @@
 {
-  "name": "miniLock",
+  "name": "minilock",
   "version": "1.0.2",
   "description": "File encryption software that does more with less.",
   "directories": {},
@@ -24,5 +24,6 @@
     "web"
   ],
   "author": "Nadim Kobeissi <nadim@nadim.computer>",
-  "license": "AGPL3"
+  "license": "AGPL3",
+  "id": "jid1-nnygNWodQBOvGQ"
 }
